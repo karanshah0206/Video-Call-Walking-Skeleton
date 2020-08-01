@@ -7,6 +7,10 @@
 
     <title>Video Call Walking Skeleton</title>
 
+    <script>
+        const roomId = "<%= roomId %>"
+    </script>
+
     <style>
         #video-grid {
             display: grid;
@@ -23,5 +27,11 @@
 </head>
 <body>
     <div id="video-grid"></div>
+
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script>
+        var socket = io();
+        socket.emit('join-room', roomId, 10);
+    </script>
 </body>
 </html>
