@@ -51,15 +51,34 @@
             audio: true
         }).then(stream => {
             addMyVideo(myVideo, stream);
+
+            myPeer.on('call', call => {
+                call.answer(stream);
+                const video = document.createElement('video');
+                call.on('stream', userVideoStream => {
+                    addMyVideo(video, userVideoStream);
+                })
+            })
+
+            socket.on('user-connected', userId => {
+                connectToNewuser(userId, stream);
+            })
         })
 
         myPeer.on('open', id => {
             socket.emit('join-room', roomId, id);
         })
 
-        socket.on('user-connected', userId => {
-            alert(userId);
-        })
+        function connectToNewuser (userId, stream) {
+            var call = myPeer.call(userId, stream);
+            const video = document.createElement('video');
+            call.on('stream', userVideoStream => {
+                addMyVideo(video, userVideoStream);
+            })
+            call.on('close', () => {
+                video.remove();
+            })
+        }
 
         function addMyVideo (video, stream) {
             video.srcObject = stream;
