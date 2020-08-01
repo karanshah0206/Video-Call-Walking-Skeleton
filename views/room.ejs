@@ -12,6 +12,10 @@
     </script>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
         #video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, 300px);
@@ -21,7 +25,8 @@
         video {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            background-color: black;
         }
     </style>
 </head>
@@ -32,9 +37,20 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script>
         var socket = io();
+        const videoGrid = document.getElementById('video-grid');
         const myPeer = new Peer(undefined, {
             host: '/',
             port: '3001'
+        })
+
+        const myVideo = document.createElement('video');
+        myVideo.muted = true;
+
+        navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        }).then(stream => {
+            addMyVideo(myVideo, stream);
         })
 
         myPeer.on('open', id => {
@@ -44,6 +60,14 @@
         socket.on('user-connected', userId => {
             alert(userId);
         })
+
+        function addMyVideo (video, stream) {
+            video.srcObject = stream;
+            video.addEventListener('loadedmetadata', () => {
+                video.play();
+            })
+            videoGrid.appendChild(video);
+        }
     </script>
 </body>
 </html>
