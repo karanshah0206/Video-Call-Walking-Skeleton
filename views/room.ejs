@@ -32,6 +32,10 @@
     <script>
         var socket = io();
         socket.emit('join-room', roomId, 10);
+
+        socket.on('user-connected', userId => {
+            alert(userId);
+        })
     </script>
 </body>
 </html>
